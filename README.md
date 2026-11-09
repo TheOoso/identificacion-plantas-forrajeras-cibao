@@ -11,6 +11,20 @@ La primera ejecución descarga los pesos oficiales de MobileNetV3 Small.
 Abrir la aplicación con:
     streamlit run app.py
 
+## Consulta externa de especies fuera del catálogo
+
+Al pulsar «Analizar fotografía», la aplicación consulta Pl@ntNet para comparar su candidata con las cuatro clases locales. La imagen se convierte a JPEG y se eliminan sus metadatos EXIF antes de enviarla. La app no presenta como identificación la salida forzada del clasificador local cuando no está disponible la consulta externa.
+
+Se requiere una clave API privada de Pl@ntNet. Configúrala en Streamlit Cloud, en **App settings → Secrets**:
+
+```toml
+PLANTNET_API_KEY = "tu_clave_privada"
+```
+
+En ejecución local puede definirse la variable de entorno `PLANTNET_API_KEY`. No se debe guardar la clave en el código, en este README ni en GitHub. La aplicación presenta el resultado externo como candidato por verificar, muestra las referencias taxonómicas de GBIF cuando están disponibles y conserva la propuesta del modelo local solo como comparación.
+
+La foto se envía a Pl@ntNet al solicitar el análisis. Según las condiciones del servicio, las imágenes se procesan para la identificación; el historial de consultas puede conservar fecha, hora y URL(s) de imagen, pero no los archivos de imagen.
+
 ## Datos y alcance
 El cuaderno incorpora 77 imágenes reducidas de observaciones de iNaturalist con grado de investigación, atribución y licencias CC BY, CC BY-SA o CC0. Las imágenes transformadas conservan las condiciones de sus respectivas licencias. Sus créditos y enlaces se encuentran en la celda de muestra incorporada.
 
@@ -21,7 +35,7 @@ La selección es de conveniencia. Los nombres locales y las localidades reportad
 ## Resultados
 La exactitud media interna de MobileNetV3 y regresión logística fue 46,9 %, con valores por partición de 18,8 %, 53,3 % y 68,8 %. La media F1 macro fue 0,478. La muestra de desarrollo comprende 47 imágenes. Se reservaron 16 para exploración y 14 observaciones dominicanas para validación local pendiente.
 
-La aplicación propone una de cuatro especies. La revisión docente forma parte de la interpretación. El proyecto todavía requiere evaluación local y una muestra más representativa. El uso forrajero debe consultarse en bibliografía técnica.
+El clasificador local solo fue entrenado para proponer una de cuatro especies y no puede detectar por sí solo plantas fuera de esas clases. La aplicación consulta Pl@ntNet al solicitar el análisis para obtener una candidata externa; esta consulta no constituye validación botánica. La revisión docente forma parte de la interpretación. El proyecto todavía requiere evaluación local y una muestra más representativa. El uso forrajero debe consultarse en bibliografía técnica.
 
 ## Estado de entrega
 Cuaderno, pesos entrenados, aplicación, créditos de imágenes y documento técnico de avance preparados. El documento técnico se organizó con los apartados de diseño de proyecto de la guía del docente. Carga del modelo e inferencia comprobadas con cuatro imágenes; esta comprobación no mide exactitud. Video y enlaces de publicación pendientes de completar. La justificación botánica y forrajera requiere referencias técnicas verificadas antes de cerrar la versión final.
