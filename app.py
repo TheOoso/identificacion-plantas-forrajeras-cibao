@@ -15,7 +15,7 @@ NOMBRES = {
     'Cynodon dactylon': 'Grama de Bermuda',
     'Gliricidia sepium': 'Piñón cubano',
     'Megathyrsus maximus': 'Hierba de Guinea',
-    'Paspalum notatum': 'Hierba bahía',
+    'Paspalum notatum': 'Pasto bahía',
 }
 # Panicum maximum es un sinónimo taxonómico usado para Megathyrsus maximus.
 ALIAS_ESPECIES = {
@@ -28,7 +28,7 @@ st.set_page_config(page_title='Plantas forrajeras del Cibao', page_icon='🌿', 
 st.title('Plantas forrajeras del Cibao')
 st.write('Identificación asistida por imágenes para las clases de Pastos y Forrajes del Politécnico José Antonio Castillo.')
 st.info('Prototipo experimental. La validación interna del clasificador local obtuvo 46,9 % de exactitud media. Toda identificación automática es una candidata y requiere revisión docente.')
-st.write('Clases locales: hierba de Guinea, grama de Bermuda, piñón cubano y hierba bahía.')
+st.write('Clases locales: hierba de Guinea, grama de Bermuda, piñón cubano y pasto bahía.')
 st.caption('Al pulsar «Analizar fotografía», la imagen se enviará a Pl@ntNet para buscar una candidata taxonómica y compararla con las cuatro clases. La imagen se convierte a JPEG y se eliminan sus metadatos EXIF antes del envío. No uses una imagen que no tengas autorización para compartir.')
 
 
