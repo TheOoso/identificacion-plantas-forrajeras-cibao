@@ -3,6 +3,7 @@ from pathlib import Path
 from io import BytesIO
 import os
 import re
+from urllib.parse import urlparse
 import joblib
 import requests
 import streamlit as st
@@ -105,8 +106,14 @@ def mostrar_imagenes_de_referencia(candidato):
     imagenes = candidato.get('images') or []
     imagenes_legibles = []
     for referencia in imagenes:
-        url = referencia.get('url')
-        if not url:
+        direcciones = referencia.get('url') or {}
+        if isinstance(direcciones, dict):
+            url = direcciones.get('m') or direcciones.get('o') or direcciones.get('s')
+        elif isinstance(direcciones, str):
+            url = direcciones
+        else:
+            url = None
+        if not isinstance(url, str) or not url:
             continue
         credito = referencia.get('citation') or referencia.get('author') or 'Autor no indicado en la respuesta'
         licencia = referencia.get('license') or 'Licencia no indicada en la respuesta'
@@ -114,7 +121,20 @@ def mostrar_imagenes_de_referencia(candidato):
     if imagenes_legibles:
         st.markdown('**Imágenes similares de referencia**')
         for url, credito in imagenes_legibles[:2]:
-            st.image(url, caption=credito, use_container_width=True)
+            try:
+                direccion = urlparse(url)
+                if direccion.scheme != 'https' or direccion.hostname != 'bs.plantnet.org':
+                    raise ValueError('Dirección de imagen no reconocida.')
+                respuesta = requests.get(url, timeout=(5, 15))
+                respuesta.raise_for_status()
+                if not respuesta.headers.get('Content-Type', '').lower().startswith('image/'):
+                    raise ValueError('El enlace no devolvió una imagen.')
+                with Image.open(BytesIO(respuesta.content)) as original:
+                    original.load()
+                    imagen = original.convert('RGB')
+                st.image(imagen, caption=credito, width=380)
+            except Exception:
+                st.caption('No se pudo cargar esta imagen de referencia. La candidata taxonómica se muestra arriba para revisión.')
 
 
 @st.cache_resource
