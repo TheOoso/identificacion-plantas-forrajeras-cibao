@@ -25,48 +25,152 @@ ALIAS_ESPECIES = {
 }
 URL_API_PLANTNET = 'https://my-api.plantnet.org/v2/identify/all'
 
-st.set_page_config(page_title='Plantas forrajeras del Cibao', page_icon='🌿', layout='centered')
+st.set_page_config(page_title='Plantas forrajeras del Cibao', page_icon='🌿', layout='wide')
 st.markdown('''
 <style>
-:root {
-  --fondo: #f4f1e8;
-  --papel: #fffefa;
-  --verde: #194d45;
-  --verde-claro: #e9f0eb;
-  --terracota: #c45f48;
-  --texto: #293431;
-  --suave: #68746f;
-  --borde: #d8ded7;
+
+:root{
+  color-scheme:dark;
+  --noche:#06151A; --cian:#35E0C2; --lima:#B8F34A; --texto:#E6F4EE; --suave:#93B4A9;
+  --vidrio:rgba(255,255,255,.06); --borde:rgba(255,255,255,.13);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
-[data-testid="stAppViewContainer"] { background: var(--fondo); color: var(--texto); }
-[data-testid="stHeader"] { background: transparent; }
-[data-testid="stMain"] > div { padding-top: 2.4rem; }
-.block-container { max-width: 980px; padding: 2.2rem 2rem 3.5rem; }
-h1, h2, h3 { color: var(--verde) !important; letter-spacing: -0.025em; }
-h1 { font-size: clamp(2.15rem, 4vw, 3.1rem) !important; line-height: 1.08 !important; margin-bottom: .8rem !important; }
-p { color: var(--texto); line-height: 1.65; }
-[data-testid="stCaptionContainer"] { color: var(--suave); line-height: 1.55; }
-[data-testid="stAlert"] { border: 1px solid #d5e2d8; border-left: 5px solid var(--verde); border-radius: 14px; background: var(--verde-claro); color: var(--verde); box-shadow: 0 5px 18px rgba(32, 60, 49, .05); }
-[data-testid="stFileUploader"] section { background: var(--papel); border: 1.5px dashed #9eafa2; border-radius: 16px; padding: 1.1rem; }
-[data-testid="stFileUploader"] button { background: var(--verde); color: white; border: 0; border-radius: 9px; }
-[data-testid="stButton"] button[kind="primary"] { background: var(--terracota); border: 1px solid var(--terracota); color: white; border-radius: 10px; font-weight: 650; padding: .62rem 1.15rem; box-shadow: 0 5px 12px rgba(196, 95, 72, .18); }
-[data-testid="stButton"] button[kind="primary"]:hover { background: #a94d39; border-color: #a94d39; }
-[data-testid="stDownloadButton"] button, [data-testid="stLinkButton"] a { background: var(--papel); color: var(--verde); border: 1px solid var(--borde); border-radius: 10px; font-weight: 600; }
-[data-testid="stDownloadButton"] button:hover, [data-testid="stLinkButton"] a:hover { color: var(--terracota); border-color: var(--terracota); }
-[data-testid="stExpander"] { background: var(--papel); border: 1px solid var(--borde); border-radius: 14px; box-shadow: 0 5px 18px rgba(32, 60, 49, .04); }
-[data-testid="stTable"] { background: var(--papel); border-radius: 12px; overflow: hidden; }
-hr { border-color: var(--borde); }
-@media (max-width: 640px) {
-  .block-container { padding: 1.4rem 1rem 2.5rem; }
-  h1 { font-size: 2.05rem !important; }
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+*{box-sizing:border-box;}
+[data-testid="stAppViewContainer"]{margin:0;background:var(--noche);color:var(--texto);font-family:Manrope,system-ui,sans-serif;line-height:1.55;overflow-x:hidden;}
+body::before{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(60% 50% at 12% 0%,rgba(53,224,194,.26),transparent 62%),
+    radial-gradient(45% 40% at 95% 12%,rgba(184,243,74,.16),transparent 62%),
+    radial-gradient(50% 40% at 50% 110%,rgba(53,224,194,.14),transparent 60%);
 }
+[data-testid="stHeader"]{background:transparent;} [data-testid="stMain"]>div{padding-top:.3rem;} .block-container{position:relative;z-index:1;max-width:1000px;padding:1rem 1.2rem 3.5rem;}
+.vidrio{background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.03)); border:1px solid var(--borde); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);}
+
+/* Hero */
+.hero{position:relative; overflow:hidden; display:grid; grid-template-columns:1.15fr .85fr; align-items:center; gap:1rem; min-height:380px; border-radius:30px; padding:2.6rem 2.4rem; margin-bottom:1.4rem;}
+.suelo{position:absolute; left:-25%; right:-25%; bottom:-34%; height:75%; transform:perspective(420px) rotateX(63deg); transform-origin:50% 100%;
+  background:repeating-linear-gradient(90deg,rgba(53,224,194,.4) 0 1px,transparent 1px 52px),repeating-linear-gradient(0deg,rgba(53,224,194,.25) 0 1px,transparent 1px 52px);
+  -webkit-mask-image:linear-gradient(to top,#000,transparent 88%); mask-image:linear-gradient(to top,#000,transparent 88%);
+  animation:avanza 5s linear infinite;}
+@keyframes avanza{to{background-position:0 52px,0 52px;}}
+.hero .txt{position:relative; z-index:2;}
+.hero h1{font-family:'Sora',sans-serif; font-weight:800; font-size:clamp(2rem,5vw,3.2rem); line-height:1.06; letter-spacing:-.025em; margin:0 0 .9rem;}
+.hero p{color:#C3DBD2; max-width:46ch; margin:0 0 1.3rem; font-size:1.06rem;}
+.chips{display:flex; flex-wrap:wrap; gap:.45rem;}
+.chip{padding:.3rem .8rem; border-radius:999px; font-size:.88rem; font-weight:500; background:rgba(53,224,194,.1); border:1px solid rgba(53,224,194,.4);}
+
+/* Escena 3D */
+.escena{position:relative; z-index:2; display:grid; place-items:center; perspective:850px; height:280px;}
+.orb{position:relative; width:220px; height:220px; transform-style:preserve-3d; animation:gira 16s linear infinite;}
+@keyframes gira{from{transform:rotateX(-20deg) rotateY(0);}to{transform:rotateX(-20deg) rotateY(360deg);}}
+.anillo{position:absolute; inset:0; border-radius:50%; border:1.5px solid rgba(184,243,74,.7); box-shadow:0 0 22px rgba(184,243,74,.28),inset 0 0 22px rgba(184,243,74,.14);}
+.a2{transform:rotateX(72deg); border-color:rgba(53,224,194,.85); box-shadow:0 0 22px rgba(53,224,194,.3),inset 0 0 22px rgba(53,224,194,.15);}
+.a3{transform:rotateY(72deg); inset:14px;}
+.sat{position:absolute; top:50%; left:50%; width:14px; height:14px; margin:-7px; border-radius:50%; background:radial-gradient(circle at 30% 30%,#fff,var(--lima) 45%,#4a8f10); box-shadow:0 0 14px var(--lima); animation:orbita 6s linear infinite;}
+.sat.s2{animation-duration:9s; animation-direction:reverse; background:radial-gradient(circle at 30% 30%,#fff,var(--cian) 45%,#0b6c5d); box-shadow:0 0 14px var(--cian);}
+@keyframes orbita{from{transform:rotateY(0) translateX(110px);}to{transform:rotateY(360deg) translateX(110px);}}
+.hoja{position:absolute; width:120px; height:120px; animation:flota 4.5s ease-in-out infinite;}
+@keyframes flota{50%{transform:translateY(-12px);}}
+
+/* Extrusión 3D de los iconos */
+.ext{filter:drop-shadow(1px 1px 0 #0b6b55) drop-shadow(2px 2px 0 #0a5946) drop-shadow(3px 3px 0 #08463a) drop-shadow(4px 4px 0 #06382f) drop-shadow(0 16px 16px rgba(0,0,0,.55));}
+
+/* Clases locales */
+h2{font-family:'Sora',sans-serif; font-size:1.15rem; margin:1.8rem 0 .8rem; font-weight:600;}
+.grid{display:grid; grid-template-columns:repeat(4,1fr); gap:.9rem; margin-bottom:1.4rem;}
+.tarjeta{perspective:720px;}
+.cara{position:relative; transform-style:preserve-3d; transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)); transition:transform .18s ease-out; border-radius:22px; padding:1.3rem .8rem 1.1rem; text-align:center;}
+.cara::after{content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; background:radial-gradient(circle at var(--mx,50%) var(--my,0%),rgba(184,243,74,.2),transparent 55%);}
+.ico{display:block; width:78px; height:78px; margin:0 auto .7rem; transform:translateZ(48px); animation:flota 4s ease-in-out infinite; animation-delay:var(--d,0s);}
+.cara b{display:block; font-family:'Sora',sans-serif; font-weight:600; font-size:.95rem; transform:translateZ(22px);}
+
+/* Aviso */
+.aviso{display:flex; gap:.9rem; align-items:flex-start; border-radius:18px; padding:1rem 1.2rem; margin-bottom:1rem; border-left:4px solid var(--lima);}
+.pulso{flex:none; width:10px; height:10px; margin-top:.5rem; border-radius:50%; background:var(--lima); box-shadow:0 0 0 0 rgba(184,243,74,.6); animation:pulsa 2s infinite;}
+@keyframes pulsa{70%{box-shadow:0 0 0 12px rgba(184,243,74,0);}100%{box-shadow:0 0 0 0 rgba(184,243,74,0);}}
+.nota{color:var(--suave); font-size:.9rem; margin:0 0 1.6rem;}
+
+/* Carga: escáner */
+.lbl{font-weight:600; margin-bottom:.5rem;}
+.drop{--c:var(--cian); position:relative; overflow:hidden; display:flex; align-items:center; gap:1.4rem; flex-wrap:wrap; border-radius:14px; padding:2.4rem 1.8rem; margin-bottom:1rem;
+  background:
+    linear-gradient(var(--c),var(--c)) left 10px top 10px/30px 2px no-repeat,linear-gradient(var(--c),var(--c)) left 10px top 10px/2px 30px no-repeat,
+    linear-gradient(var(--c),var(--c)) right 10px top 10px/30px 2px no-repeat,linear-gradient(var(--c),var(--c)) right 10px top 10px/2px 30px no-repeat,
+    linear-gradient(var(--c),var(--c)) left 10px bottom 10px/30px 2px no-repeat,linear-gradient(var(--c),var(--c)) left 10px bottom 10px/2px 30px no-repeat,
+    linear-gradient(var(--c),var(--c)) right 10px bottom 10px/30px 2px no-repeat,linear-gradient(var(--c),var(--c)) right 10px bottom 10px/2px 30px no-repeat,
+    rgba(255,255,255,.04);
+  border:1px dashed rgba(53,224,194,.3);}
+.drop::before{content:""; position:absolute; left:12px; right:12px; top:12%; height:2px; background:linear-gradient(90deg,transparent,var(--cian),transparent); box-shadow:0 0 14px var(--cian); animation:barre 3.4s ease-in-out infinite alternate;}
+@keyframes barre{to{top:88%;}}
+.drop>*{position:relative; z-index:1;}
+.cubo-w{perspective:300px; width:36px; height:36px;}
+.cubo{position:relative; width:36px; height:36px; transform-style:preserve-3d; animation:gira2 9s linear infinite;}
+.cubo i{position:absolute; inset:0; border:1.5px solid var(--cian); background:rgba(53,224,194,.1);}
+.cubo i:nth-child(1){transform:translateZ(18px);} .cubo i:nth-child(2){transform:rotateY(90deg) translateZ(18px);}
+.cubo i:nth-child(3){transform:rotateY(180deg) translateZ(18px);} .cubo i:nth-child(4){transform:rotateY(-90deg) translateZ(18px);}
+.cubo i:nth-child(5){transform:rotateX(90deg) translateZ(18px);} .cubo i:nth-child(6){transform:rotateX(-90deg) translateZ(18px);}
+@keyframes gira2{from{transform:rotateX(-25deg) rotateY(0);}to{transform:rotateX(-25deg) rotateY(360deg);}}
+.subir{display:inline-flex; align-items:center; gap:.5rem; border:0; border-radius:12px; padding:.7rem 1.3rem; cursor:pointer; font:600 1rem 'Manrope',sans-serif; color:#04231A; background:linear-gradient(120deg,var(--lima),var(--cian)); box-shadow:0 8px 24px -6px rgba(53,224,194,.6); transition:transform .15s,box-shadow .15s;}
+.subir:hover{transform:translateY(-2px); box-shadow:0 12px 30px -6px rgba(184,243,74,.7);}
+.drop span.fmt{color:var(--suave); font-size:.9rem;}
+
+/* Expander y botones */
+details.exp{border-radius:16px; padding:.9rem 1.2rem; margin-bottom:1rem;}
+details.exp summary{cursor:pointer; font-weight:600; list-style:none;}
+details.exp summary::before{content:"›"; display:inline-block; margin-right:.6rem; color:var(--cian); transition:transform .2s;}
+details.exp[open] summary::before{transform:rotate(90deg);}
+details.exp p{color:var(--suave); margin:.7rem 0 0;}
+.btns{display:flex; flex-wrap:wrap; gap:.7rem;}
+.btn{display:inline-flex; align-items:center; gap:.5rem; padding:.6rem 1.15rem; border-radius:12px; cursor:pointer; color:var(--texto); font:600 .95rem 'Manrope',sans-serif; background:var(--vidrio); border:1px solid rgba(53,224,194,.5); transition:background-color .15s,box-shadow .15s;}
+.btn:hover{background:rgba(53,224,194,.16); box-shadow:0 0 20px rgba(53,224,194,.3);}
+button:focus-visible,summary:focus-visible{outline:3px solid var(--lima); outline-offset:3px;}
+
+@media (max-width:720px){
+  .hero{grid-template-columns:1fr; padding:1.8rem 1.3rem;} .escena{height:240px;}
+  .grid{grid-template-columns:repeat(2,1fr);}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important;}}
+
+/* Widgets Streamlit con la paleta y los paneles del diseño de referencia */
+[data-testid="stFileUploader"] section{position:relative;overflow:hidden;border:1px dashed rgba(53,224,194,.45)!important;border-radius:14px!important;padding:1.6rem 1.25rem!important;background:linear-gradient(rgba(53,224,194,.72),rgba(53,224,194,.72)) left 10px top 10px/28px 2px no-repeat,linear-gradient(rgba(53,224,194,.72),rgba(53,224,194,.72)) left 10px top 10px/2px 28px no-repeat,linear-gradient(rgba(53,224,194,.72),rgba(53,224,194,.72)) right 10px top 10px/28px 2px no-repeat,linear-gradient(rgba(53,224,194,.72),rgba(53,224,194,.72)) right 10px top 10px/2px 28px no-repeat,linear-gradient(rgba(53,224,194,.72),rgba(53,224,194,.72)) left 10px bottom 10px/28px 2px no-repeat,linear-gradient(rgba(53,224,194,.72),rgba(53,224,194,.72)) left 10px bottom 10px/2px 28px no-repeat,linear-gradient(rgba(53,224,194,.72),rgba(53,224,194,.72)) right 10px bottom 10px/28px 2px no-repeat,linear-gradient(rgba(53,224,194,.72),rgba(53,224,194,.72)) right 10px bottom 10px/2px 28px no-repeat,rgba(255,255,255,.035)!important;box-shadow:inset 0 0 28px rgba(53,224,194,.035)}
+[data-testid="stFileUploader"] section:before{content:"";position:absolute;z-index:0;left:12px;right:12px;top:12%;height:2px;background:linear-gradient(90deg,transparent,var(--cian),transparent);box-shadow:0 0 14px var(--cian);opacity:.72;animation:barre 3.4s ease-in-out infinite alternate}
+[data-testid="stFileUploader"] section>*{position:relative;z-index:1}[data-testid="stFileUploader"] button{border:0!important;border-radius:12px!important;padding:.7rem 1.3rem!important;color:#04231a!important;background:linear-gradient(120deg,var(--lima),var(--cian))!important;font:600 1rem Manrope,system-ui,sans-serif!important;box-shadow:0 8px 24px -6px rgba(53,224,194,.6)}
+[data-testid="stFileUploaderDropzoneInstructions"]{color:var(--texto)!important}[data-testid="stFileUploaderDropzoneInstructions"] small{color:var(--suave)!important}
+[data-testid="stImage"] img{border-radius:16px;border:1px solid rgba(53,224,194,.28);box-shadow:0 14px 34px rgba(0,0,0,.4)}[data-testid="stImage"] p{color:var(--suave)!important}
+[data-testid="stButton"] button[kind="primary"]{border:0!important;border-radius:12px!important;color:#04231a!important;background:linear-gradient(120deg,var(--lima),var(--cian))!important;font:700 1rem Manrope,sans-serif!important;box-shadow:0 8px 24px -6px rgba(53,224,194,.6)}
+[data-testid="stAlert"]{border:1px solid var(--borde)!important;border-radius:16px!important;background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025))!important;color:var(--texto)!important;backdrop-filter:blur(10px)}[data-testid="stAlert"] p{color:var(--texto)!important}
+[data-testid="stExpander"]{border:1px solid var(--borde)!important;border-radius:16px!important;background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.025))!important;backdrop-filter:blur(10px);margin-bottom:1rem}[data-testid="stExpander"] summary{color:var(--texto)!important;font-weight:700!important}[data-testid="stExpander"] svg{color:var(--cian)!important}
+[data-testid="stTable"]{border:1px solid var(--borde);border-radius:14px;overflow:hidden}[data-testid="stTable"] th{background:rgba(53,224,194,.14)!important;color:#d8fff4!important}[data-testid="stTable"] td{background:rgba(255,255,255,.035)!important;color:var(--texto)!important}
+[data-testid="stDownloadButton"] button,[data-testid="stLinkButton"] a{width:100%;min-height:46px;border:1px solid rgba(53,224,194,.5)!important;border-radius:12px!important;color:var(--texto)!important;background:var(--vidrio)!important;font:600 .95rem Manrope,sans-serif!important;transition:background-color .15s,box-shadow .15s}[data-testid="stDownloadButton"] button:hover,[data-testid="stLinkButton"] a:hover{background:rgba(53,224,194,.16)!important;box-shadow:0 0 20px rgba(53,224,194,.3)}
+[data-testid="stCaptionContainer"]{color:var(--suave)!important}[data-testid="stCode"]{border:1px solid var(--borde);border-radius:12px;background:rgba(255,255,255,.04)}h2{font-family:Sora,Manrope,sans-serif!important;color:var(--texto)!important;font-size:1.15rem!important;margin:1.8rem 0 .8rem!important}
+@media(max-width:720px){.block-container{padding:.65rem .85rem 2.5rem}.hero{grid-template-columns:1fr!important;padding:1.8rem 1.3rem!important}.escena{height:230px!important}.grid{grid-template-columns:repeat(2,1fr)!important}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+
 </style>
 ''', unsafe_allow_html=True)
-st.title('Plantas forrajeras del Cibao')
-st.write('Identificación asistida por imágenes para las clases de Pastos y Forrajes del Politécnico José Antonio Castillo.')
-st.info('Prototipo experimental. La validación interna del clasificador local obtuvo 46,9 % de exactitud media. Toda identificación automática es una candidata y requiere revisión docente.')
-st.write('Clases locales: hierba de Guinea, grama de Bermuda, piñón cubano y pasto bahía.')
-st.caption('Al pulsar «Analizar fotografía», la imagen se enviará a Pl@ntNet para buscar una candidata taxonómica y compararla con las cuatro clases. La imagen se convierte a JPEG y se eliminan sus metadatos EXIF antes del envío. No uses una imagen que no tengas autorización para compartir.')
+st.markdown('''
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D9FF7A"/><stop offset=".55" stop-color="#7BEA8A"/><stop offset="1" stop-color="#35E0C2"/></linearGradient></defs></svg>
+<section class="hero vidrio">
+    <div class="suelo" aria-hidden="true"></div>
+    <div class="txt">
+      <h1>Plantas forrajeras del Cibao</h1>
+      <p>Identificación asistida por imágenes para las clases de Pastos y Forrajes del Politécnico José Antonio Castillo.</p>
+      <div class="chips"><span class="chip">Hierba de Guinea</span><span class="chip">Grama de Bermuda</span><span class="chip">Piñón cubano</span><span class="chip">Pasto bahía</span></div>
+    </div>
+    <div class="escena" aria-hidden="true">
+      <div class="orb"><div class="anillo"></div><div class="anillo a2"></div><div class="anillo a3"></div><div class="sat"></div><div class="sat s2"></div></div>
+      <svg class="hoja ext" viewBox="0 0 64 64"><path fill="url(#g)" d="M32 4C52 12 58 34 46 50 40 59 24 59 17 52 6 38 12 15 32 4Z"/><path d="M32 12V56M32 30L22 22M32 38L44 28M32 46L22 40" stroke="#0b6b55" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg>
+    </div>
+  </section>
+''', unsafe_allow_html=True)
+st.markdown('<div class="aviso vidrio"><span class="pulso"></span><div>Prototipo experimental. La validación interna del clasificador local obtuvo <strong>46,9 %</strong> de exactitud media. Toda identificación automática es una candidata y requiere revisión docente.</div></div>', unsafe_allow_html=True)
+st.markdown('<h2>Clases locales</h2><div class="grid">\n    <div class="tarjeta"><div class="cara vidrio"><svg class="ico ext" viewBox="0 0 64 64" style="--d:0s"><g fill="url(#g)"><path d="M32 58C28 38 20 24 10 14 24 18 33 34 32 58Z"/><path d="M32 58C32 36 36 20 44 6 46 24 38 42 32 58Z"/><path d="M32 58C36 42 46 32 56 28 50 42 42 52 32 58Z"/><path d="M32 58C28 44 18 36 8 34 14 46 22 54 32 58Z"/></g></svg><b>Hierba de Guinea</b></div></div>\n    <div class="tarjeta"><div class="cara vidrio"><svg class="ico ext" viewBox="0 0 64 64" style="--d:.5s"><g fill="url(#g)"><path d="M10 48L13 28 19 47Z"/><path d="M25 49L30 22 35 49Z"/><path d="M40 48L46 30 49 47Z"/><path d="M52 45L58 28 59 43Z"/></g><path d="M3 50C20 44 40 54 61 44" stroke="url(#g)" stroke-width="3.5" stroke-linecap="round" fill="none"/></svg><b>Grama de Bermuda</b></div></div>\n    <div class="tarjeta"><div class="cara vidrio"><svg class="ico ext" viewBox="0 0 64 64" style="--d:1s"><path d="M32 60V6" stroke="url(#g)" stroke-width="3" stroke-linecap="round"/><g fill="url(#g)"><ellipse cx="21" cy="46" rx="10" ry="4.6" transform="rotate(-22 21 46)"/><ellipse cx="43" cy="46" rx="10" ry="4.6" transform="rotate(22 43 46)"/><ellipse cx="21" cy="31" rx="10" ry="4.6" transform="rotate(-22 21 31)"/><ellipse cx="43" cy="31" rx="10" ry="4.6" transform="rotate(22 43 31)"/><ellipse cx="22" cy="17" rx="9" ry="4.2" transform="rotate(-22 22 17)"/><ellipse cx="42" cy="17" rx="9" ry="4.2" transform="rotate(22 42 17)"/><ellipse cx="32" cy="7" rx="4.2" ry="6"/></g></svg><b>Piñón cubano</b></div></div>\n    <div class="tarjeta"><div class="cara vidrio"><svg class="ico ext" viewBox="0 0 64 64" style="--d:1.5s"><g stroke="url(#g)" fill="none" stroke-linecap="round"><path d="M32 60V30" stroke-width="3.5"/><path d="M32 30C26 22 20 14 15 4" stroke-width="5" stroke-dasharray="7 3.5"/><path d="M32 30C38 22 44 14 49 4" stroke-width="5" stroke-dasharray="7 3.5"/></g></svg><b>Pasto bahía</b></div></div>\n  </div>', unsafe_allow_html=True)
+st.markdown('<p class="nota">Al pulsar «Analizar fotografía», la imagen se enviará a Pl@ntNet para buscar una candidata taxonómica y compararla con las cuatro clases. La imagen se convierte a JPEG y se eliminan sus metadatos EXIF antes del envío. No uses una imagen que no tengas autorización para compartir.</p>', unsafe_allow_html=True)
+st.markdown('<div class="lbl">Carga una fotografía de una sola planta</div>', unsafe_allow_html=True)
+foto = st.file_uploader('Carga una fotografía de una sola planta', type=['jpg', 'jpeg', 'png'], label_visibility='collapsed', max_upload_size=10)
 
 
 def obtener_clave_plantnet():
@@ -183,7 +287,6 @@ def cargar_modelo_local():
     return extractor, joblib.load(ROOT / 'modelos/clasificador.joblib'), MobileNet_V3_Small_Weights.IMAGENET1K_V1.transforms()
 
 
-foto = st.file_uploader('Carga una fotografía de una sola planta', type=['jpg', 'jpeg', 'png'])
 if foto is not None:
     try:
         if foto.size > 10 * 1024 * 1024:
@@ -271,7 +374,10 @@ with st.expander('Método y resultados del proyecto'):
     st.table({'Método': ['Regresión logística', 'Bosque aleatorio', 'MobileNetV3 + regresión logística'],
               'Exactitud media interna': ['30,1 %', '31,8 %', '46,9 %']})
     st.write('El clasificador local solo distingue las cuatro especies entrenadas. Pl@ntNet aporta una búsqueda taxonómica externa; sus candidatas también requieren revisión docente. La evaluación del aprendizaje de los estudiantes y la validación de campo permanecen pendientes.')
-st.download_button('Descargar cuaderno', (ROOT / 'Plantas_forrajeras_Cibao.ipynb').read_bytes(),
-                   file_name='Plantas_forrajeras_Cibao.ipynb')
-st.download_button('Descargar documento técnico de avance', (ROOT / 'Documento_tecnico_avance.pdf').read_bytes(),
-                   file_name='Documento_tecnico_avance.pdf', mime='application/pdf')
+descarga_cuaderno, descarga_documento = st.columns(2)
+with descarga_cuaderno:
+    st.download_button('Descargar cuaderno', (ROOT / 'Plantas_forrajeras_Cibao.ipynb').read_bytes(),
+                       file_name='Plantas_forrajeras_Cibao.ipynb', use_container_width=True)
+with descarga_documento:
+    st.download_button('Descargar documento técnico de avance', (ROOT / 'Documento_tecnico_avance.pdf').read_bytes(),
+                       file_name='Documento_tecnico_avance.pdf', mime='application/pdf', use_container_width=True)
