@@ -69,8 +69,10 @@ def identificar_con_plantnet(imagen, clave):
         return None
     if respuesta.status_code == 429:
         raise RuntimeError('Pl@ntNet alcanzó el límite temporal de consultas. Inténtalo más tarde.')
-    if respuesta.status_code in (401, 403):
-        raise RuntimeError('Pl@ntNet rechazó la clave API. Revisa la configuración del secreto PLANTNET_API_KEY.')
+    if respuesta.status_code == 401:
+        raise RuntimeError('Pl@ntNet respondió HTTP 401: no autorizó la clave. Verifica que sea la clave privada de la API, copiada completa y sin el prefijo «api-key:». No compartas la clave.')
+    if respuesta.status_code == 403:
+        raise RuntimeError('Pl@ntNet respondió HTTP 403: la solicitud está bloqueada por la configuración de acceso de la clave. En los ajustes de Pl@ntNet revisa «Expose my API key» y las «Authorized IPs»; esta aplicación consulta desde el servidor, no desde el navegador.')
     if respuesta.status_code >= 500:
         raise RuntimeError('Pl@ntNet no está disponible en este momento. Inténtalo más tarde.')
     if not respuesta.ok:
