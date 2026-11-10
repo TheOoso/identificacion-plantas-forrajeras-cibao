@@ -26,6 +26,42 @@ ALIAS_ESPECIES = {
 URL_API_PLANTNET = 'https://my-api.plantnet.org/v2/identify/all'
 
 st.set_page_config(page_title='Plantas forrajeras del Cibao', page_icon='🌿', layout='centered')
+st.markdown('''
+<style>
+:root {
+  --fondo: #f4f1e8;
+  --papel: #fffefa;
+  --verde: #194d45;
+  --verde-claro: #e9f0eb;
+  --terracota: #c45f48;
+  --texto: #293431;
+  --suave: #68746f;
+  --borde: #d8ded7;
+}
+[data-testid="stAppViewContainer"] { background: var(--fondo); color: var(--texto); }
+[data-testid="stHeader"] { background: transparent; }
+[data-testid="stMain"] > div { padding-top: 2.4rem; }
+.block-container { max-width: 980px; padding: 2.2rem 2rem 3.5rem; }
+h1, h2, h3 { color: var(--verde) !important; letter-spacing: -0.025em; }
+h1 { font-size: clamp(2.15rem, 4vw, 3.1rem) !important; line-height: 1.08 !important; margin-bottom: .8rem !important; }
+p { color: var(--texto); line-height: 1.65; }
+[data-testid="stCaptionContainer"] { color: var(--suave); line-height: 1.55; }
+[data-testid="stAlert"] { border: 1px solid #d5e2d8; border-left: 5px solid var(--verde); border-radius: 14px; background: var(--verde-claro); color: var(--verde); box-shadow: 0 5px 18px rgba(32, 60, 49, .05); }
+[data-testid="stFileUploader"] section { background: var(--papel); border: 1.5px dashed #9eafa2; border-radius: 16px; padding: 1.1rem; }
+[data-testid="stFileUploader"] button { background: var(--verde); color: white; border: 0; border-radius: 9px; }
+[data-testid="stButton"] button[kind="primary"] { background: var(--terracota); border: 1px solid var(--terracota); color: white; border-radius: 10px; font-weight: 650; padding: .62rem 1.15rem; box-shadow: 0 5px 12px rgba(196, 95, 72, .18); }
+[data-testid="stButton"] button[kind="primary"]:hover { background: #a94d39; border-color: #a94d39; }
+[data-testid="stDownloadButton"] button, [data-testid="stLinkButton"] a { background: var(--papel); color: var(--verde); border: 1px solid var(--borde); border-radius: 10px; font-weight: 600; }
+[data-testid="stDownloadButton"] button:hover, [data-testid="stLinkButton"] a:hover { color: var(--terracota); border-color: var(--terracota); }
+[data-testid="stExpander"] { background: var(--papel); border: 1px solid var(--borde); border-radius: 14px; box-shadow: 0 5px 18px rgba(32, 60, 49, .04); }
+[data-testid="stTable"] { background: var(--papel); border-radius: 12px; overflow: hidden; }
+hr { border-color: var(--borde); }
+@media (max-width: 640px) {
+  .block-container { padding: 1.4rem 1rem 2.5rem; }
+  h1 { font-size: 2.05rem !important; }
+}
+</style>
+''', unsafe_allow_html=True)
 st.title('Plantas forrajeras del Cibao')
 st.write('Identificación asistida por imágenes para las clases de Pastos y Forrajes del Politécnico José Antonio Castillo.')
 st.info('Prototipo experimental. La validación interna del clasificador local obtuvo 46,9 % de exactitud media. Toda identificación automática es una candidata y requiere revisión docente.')
