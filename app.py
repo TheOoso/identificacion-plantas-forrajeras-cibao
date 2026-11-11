@@ -381,3 +381,5 @@ with descarga_cuaderno:
 with descarga_documento:
     st.download_button('Descargar documento técnico de avance', (ROOT / 'Documento_tecnico_avance.pdf').read_bytes(),
                        file_name='Documento_tecnico_avance.pdf', mime='application/pdf', use_container_width=True)
+
+st.link_button('Ver repositorio del proyecto en GitHub', 'https://github.com/TheOoso/identificacion-plantas-forrajeras-cibao')
